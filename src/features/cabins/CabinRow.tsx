@@ -1,5 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
+
+import toast from "react-hot-toast";
 import { deleteCabins } from "../../services/apiCabins";
 import { Cabin } from "../../types";
 import SpinnerMini from "../../ui/Spinnermini";
@@ -57,9 +59,18 @@ export default function CabinRow({ cabin }: CabinRowProps) {
     discount,
     maxCapacity,
   } = cabin;
+  const queryClient = useQueryClient();
   const { mutate, isLoading: isDeleting } = useMutation({
     mutationFn: deleteCabins,
+    onSuccess: () => {
+      toast.success("Cabin successfully deleted");
+      queryClient.invalidateQueries({
+        queryKey: ["cabins"],
+      });
+    },
+    onError: (err: Error) => toast.error(err.message),
   });
+
   return (
     <TableRow>
       <Img src={image} alt={cabin.name} />
