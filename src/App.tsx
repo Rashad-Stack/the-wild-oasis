@@ -60,7 +60,7 @@ export default function App() {
           },
           style: {
             background: "var(--color-grey-0)",
-            fontSize: "1rem",
+            fontSize: "16px",
             maxWidth: "500px",
             padding: "16px 24px",
             color: "var(--color-grey-6700)",

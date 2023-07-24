@@ -8,3 +8,12 @@ export interface Cabin {
   description: string;
   image: string;
 }
+
+export interface InputsCabin {
+  name: string;
+  maxCapacity: number;
+  regularPrice: number;
+  discount: number;
+  description: string;
+  image: FileList;
+}
