@@ -17,3 +17,11 @@ export interface InputsCabin {
   description: string;
   image: FileList | string;
 }
+
+export interface Settings {
+  readonly id?: number;
+  minBookingLength: number;
+  maxBookingLength: number;
+  maxGuestPerBooking: number;
+  breakfastPrice: number;
+}
