@@ -28,8 +28,6 @@ export async function createEditCabin(
     imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
   }
 
-  console.log({ ...newCabin, image: imagePath });
-
   // Create/Edit cabin
   const query = supabase.from("cabins");
 
@@ -73,7 +71,7 @@ export async function createEditCabin(
   return data;
 }
 
-export async function deleteCabins(id: number) {
+export async function deleteCabin(id: number) {
   const { data, error } = await supabase.from("cabins").delete().eq("id", id);
   if (error) {
     console.error(error);

@@ -1,13 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import styled from "styled-components";
 
-import toast from "react-hot-toast";
-import { deleteCabins } from "../../services/apiCabins";
 import { Cabin } from "../../types";
 import SpinnerMini from "../../ui/Spinnermini";
 import { formatCurrency } from "../../utils/helpers";
 import CreateCabinForm from "./CreateCabinForm";
+import { useDeleteCabin } from "./useDeleteCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -54,6 +52,8 @@ interface CabinRowProps {
 
 export default function CabinRow({ cabin }: CabinRowProps) {
   const [showForm, setShowForm] = useState<boolean>(false);
+  const { isDeleting, deleteCabin } = useDeleteCabin();
+
   const {
     id: cabinId,
     name,
@@ -62,17 +62,6 @@ export default function CabinRow({ cabin }: CabinRowProps) {
     discount,
     maxCapacity,
   } = cabin;
-  const queryClient = useQueryClient();
-  const { mutate, isLoading: isDeleting } = useMutation({
-    mutationFn: deleteCabins,
-    onSuccess: () => {
-      toast.success("Cabin successfully deleted");
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-    },
-    onError: (err: Error) => toast.error(err.message),
-  });
 
   return (
     <>
@@ -81,12 +70,18 @@ export default function CabinRow({ cabin }: CabinRowProps) {
         <Cabin>{name}</Cabin>
         <div>Fits up to {maxCapacity} people</div>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
+        {discount ? (
+          <Discount>
+            {formatCurrency(regularPrice * (1 - discount / 100))}
+          </Discount>
+        ) : (
+          <span>&mdash;</span>
+        )}
         <div>
           <button onClick={() => setShowForm(!showForm)} disabled={isDeleting}>
             Edit
           </button>
-          <button onClick={() => mutate(cabinId)} disabled={isDeleting}>
+          <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
             {isDeleting && <SpinnerMini />} Delete
           </button>
         </div>
