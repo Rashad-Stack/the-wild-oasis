@@ -15,5 +15,5 @@ export interface InputsCabin {
   regularPrice: number;
   discount: number;
   description: string;
-  image: FileList;
+  image: FileList | string;
 }
