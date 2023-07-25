@@ -64,8 +64,6 @@ export async function createEditCabin(
         "Cabins image could not be uploaded, and cabin was not created!"
       );
     }
-  } else {
-    console.error("Data is null. Unable to proceed with the deletion.");
   }
 
   return data;

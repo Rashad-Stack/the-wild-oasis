@@ -1,10 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
 
+import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { Cabin } from "../../types";
-import SpinnerMini from "../../ui/Spinnermini";
 import { formatCurrency } from "../../utils/helpers";
 import CreateCabinForm from "./CreateCabinForm";
+import { useCreateCabin } from "./useCreateCabin";
 import { useDeleteCabin } from "./useDeleteCabin";
 
 const TableRow = styled.div`
@@ -53,6 +54,7 @@ interface CabinRowProps {
 export default function CabinRow({ cabin }: CabinRowProps) {
   const [showForm, setShowForm] = useState<boolean>(false);
   const { isDeleting, deleteCabin } = useDeleteCabin();
+  const { createCabin, isCreating } = useCreateCabin();
 
   const {
     id: cabinId,
@@ -61,7 +63,19 @@ export default function CabinRow({ cabin }: CabinRowProps) {
     regularPrice,
     discount,
     maxCapacity,
+    description,
   } = cabin;
+
+  function duplicate() {
+    createCabin({
+      name: `copy of ${name}`,
+      image,
+      regularPrice,
+      discount,
+      maxCapacity,
+      description,
+    });
+  }
 
   return (
     <>
@@ -78,11 +92,14 @@ export default function CabinRow({ cabin }: CabinRowProps) {
           <span>&mdash;</span>
         )}
         <div>
+          <button onClick={() => duplicate()} disabled={isCreating}>
+            <HiSquare2Stack />
+          </button>
           <button onClick={() => setShowForm(!showForm)} disabled={isDeleting}>
-            Edit
+            <HiPencil />
           </button>
           <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
-            {isDeleting && <SpinnerMini />} Delete
+            <HiTrash />
           </button>
         </div>
       </TableRow>
