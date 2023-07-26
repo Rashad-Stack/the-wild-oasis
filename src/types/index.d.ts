@@ -20,8 +20,8 @@ export interface InputsCabin {
 
 export interface Settings {
   readonly id?: number;
-  minBookingLength: number;
-  maxBookingLength: number;
-  maxGuestPerBooking: number;
-  breakfastPrice: number;
+  minBookingLength?: number;
+  maxBookingLength?: number;
+  maxGuestPerBooking?: number;
+  breakfastPrice?: number;
 }
