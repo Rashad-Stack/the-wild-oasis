@@ -13,9 +13,10 @@ import { useEditCabin } from "./useEditCabin";
 
 interface CabinFormProps {
   cabinToEdit?: Cabin;
+  onCloseModal?(): void;
 }
 
-function CreateCabinForm({ cabinToEdit }: CabinFormProps) {
+function CreateCabinForm({ cabinToEdit, onCloseModal }: CabinFormProps) {
   const { createCabin, isCreating } = useCreateCabin();
   const { editCabin, isEditing } = useEditCabin();
 
@@ -35,14 +36,20 @@ function CreateCabinForm({ cabinToEdit }: CabinFormProps) {
       editCabin(
         { newCabinData: { ...data, image: data.image }, id: cabinId },
         {
-          onSuccess: () => reset(),
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
     else
       createCabin(
         { ...data, image: data.image },
         {
-          onSuccess: () => reset(),
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
   }
@@ -52,7 +59,9 @@ function CreateCabinForm({ cabinToEdit }: CabinFormProps) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit, onError)}>
+    <Form
+      onSubmit={handleSubmit(submit, onError)}
+      type={onCloseModal ? "modal" : "regular"}>
       <FormRow label="Cabin name" err={errors?.name?.message}>
         <Input
           type="text"
@@ -134,7 +143,11 @@ function CreateCabinForm({ cabinToEdit }: CabinFormProps) {
       <FormRow>
         {/* type is an HTML attribute! */}
         <>
-          <Button variation="secondary" type="reset" size="medium">
+          <Button
+            variation="secondary"
+            type="reset"
+            size="medium"
+            onClick={() => onCloseModal?.()}>
             Cancel
           </Button>
           <Button variation="primary" size="medium" disabled={isWorking}>
