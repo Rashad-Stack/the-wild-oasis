@@ -24,7 +24,7 @@ interface ConfirmDeleteProps {
   resourceName: string;
   onConfirm: () => void;
   disabled: boolean;
-  onCloseModal(): void;
+  onCloseModal?(): void;
 }
 
 function ConfirmDelete({
