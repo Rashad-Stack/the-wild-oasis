@@ -1,11 +1,11 @@
-import styled from "styled-components";
 import { format, isToday } from "date-fns";
+import styled from "styled-components";
 
-import Tag from "../../ui/Tag";
 import Table from "../../ui/Table";
+import Tag from "../../ui/Tag";
 
-import { formatCurrency } from "../../utils/helpers";
-import { formatDistanceFromNow } from "../../utils/helpers";
+import { Booking } from "../../types";
+import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -34,6 +34,16 @@ const Amount = styled.div`
   font-weight: 500;
 `;
 
+interface BookingRowProps {
+  booking: Booking;
+}
+
+interface StatusToTagName {
+  unconfirmed: "blue";
+  "checked-in": "green";
+  "checked-out": "silver";
+}
+
 function BookingRow({
   booking: {
     id: bookingId,
@@ -44,24 +54,30 @@ function BookingRow({
     numGuests,
     totalPrice,
     status,
-    guests: { fullName: guestName, email },
-    cabins: { name: cabinName },
+    guests,
+    cabins,
   },
-}) {
-  const statusToTagName = {
+}: BookingRowProps) {
+  const statusToTagName: StatusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
     "checked-out": "silver",
   };
 
+  const statusTag = status as keyof StatusToTagName;
+
   return (
     <Table.Row>
-      <Cabin>{cabinName}</Cabin>
+      {cabins.map((cabin, index) => (
+        <Cabin key={index}>{cabin.name}</Cabin>
+      ))}
 
-      <Stacked>
-        <span>{guestName}</span>
-        <span>{email}</span>
-      </Stacked>
+      {guests.map((guest) => (
+        <Stacked key={guest.email}>
+          <span>{guest.fullName}</span>
+          <span>{guest.email}</span>
+        </Stacked>
+      ))}
 
       <Stacked>
         <span>
@@ -76,7 +92,7 @@ function BookingRow({
         </span>
       </Stacked>
 
-      <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
+      <Tag type={statusToTagName[statusTag]}>{status.replace("-", " ")}</Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
     </Table.Row>

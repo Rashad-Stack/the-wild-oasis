@@ -1,6 +1,5 @@
 import { createContext, useContext } from "react";
 import styled from "styled-components";
-import { Cabin } from "../types";
 
 interface CommonRowProps {
   columns: string;
@@ -113,12 +112,12 @@ function Row({ children }: RowProps) {
   );
 }
 
-interface BodyProps {
-  data: Cabin[];
-  render(cabin: Cabin): React.ReactNode;
+interface BodyProps<T> {
+  data: T[];
+  render(cabin: T): React.ReactNode;
 }
 
-function Body({ data, render }: BodyProps) {
+function Body<T>({ data, render }: BodyProps<T>) {
   if (!data.length) return <Empty>No data to show at the moment</Empty>;
 
   return <StyledBody role="row-group">{data.map(render)}</StyledBody>;

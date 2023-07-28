@@ -25,3 +25,25 @@ export interface Settings {
   maxGuestPerBooking?: number;
   breakfastPrice?: number;
 }
+
+export interface Cabins {
+  readonly name: string;
+}
+
+export interface Guest {
+  readonly fullName: string;
+  readonly email: string;
+}
+
+export interface Booking {
+  readonly id: number;
+  created_at: string;
+  startDate: string;
+  endDate: string;
+  numNights: number;
+  numGuests: number;
+  totalPrice: number;
+  status: string;
+  guests: Guest[];
+  cabins: Cabins[];
+}
