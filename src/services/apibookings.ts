@@ -1,4 +1,5 @@
 import { Booking, Cabins, Guest } from "../types";
+import { PAGE_SIZE } from "../utils/constants";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
@@ -18,16 +19,15 @@ interface SortBy {
 interface Query {
   filter: Filter | null;
   sortBy: SortBy | null;
+  page: number;
 }
 
-export async function getBookings({
-  filter,
-  sortBy,
-}: Query): Promise<Booking[]> {
+export async function getBookings({ filter, sortBy, page }: Query) {
   let query = supabase
     .from("bookings")
     .select(
-      "id,created_at,startDate,endDate,numNights,numGuests,status,totalPrice, cabins(name), guests(fullName,email)"
+      "id,created_at,startDate,endDate,numNights,numGuests,status,totalPrice, cabins(name), guests(fullName,email)",
+      { count: "exact" }
     );
 
   // FILTER
@@ -39,7 +39,14 @@ export async function getBookings({
       ascending: sortBy.direction === "asc",
     });
 
-  const { data, error } = await query;
+  // PAGINATION
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
 
   if (error) {
     console.error(error);
@@ -47,7 +54,7 @@ export async function getBookings({
   }
 
   // Convert cabins and guests objects into arrays
-  const bookingsWithArrays: Booking[] = data.map((booking: Booking) => {
+  const bookings: Booking[] = data.map((booking: Booking) => {
     const cabins: Cabins[] = Array.isArray(booking.cabins)
       ? booking.cabins
       : [booking.cabins];
@@ -62,7 +69,7 @@ export async function getBookings({
     };
   });
 
-  return bookingsWithArrays;
+  return { bookings, count };
 }
 
 export async function getBooking(id: number) {

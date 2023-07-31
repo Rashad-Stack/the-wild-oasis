@@ -5,6 +5,8 @@ import { getBookings } from "../../services/apibookings";
 export function useBookings() {
   const [searchParams] = useSearchParams();
   const filterValue: string = searchParams.get("status") as string;
+
+  // FILTER
   const filter =
     !filterValue || filterValue === "all"
       ? null
@@ -13,6 +15,7 @@ export function useBookings() {
           value: filterValue,
         };
 
+  // SORT
   const sortByRaw = searchParams.get("sortBy") || "startDate-desc";
   const [field, direction] = sortByRaw.split("-");
   const sortBy = {
@@ -20,13 +23,17 @@ export function useBookings() {
     direction,
   };
 
-  const { data: bookings, isLoading } = useQuery({
-    queryKey: ["bookings", filter, sortBy],
-    queryFn: () => getBookings({ filter, sortBy }),
+  // PAGINATION
+  const page = Number(searchParams.get("page")) || 1;
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["bookings", filter, sortBy, page],
+    queryFn: () => getBookings({ filter, sortBy, page }),
   });
 
   return {
-    bookings,
+    bookings: data?.bookings,
+    count: data?.count,
     isLoading,
   };
 }
