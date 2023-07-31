@@ -4,6 +4,7 @@ import supabase from "../services/supabase";
 import Button from "../ui/Button";
 import { subtractDates } from "../utils/helpers";
 
+import { BookingInputs } from "../types";
 import { bookings } from "./data-bookings";
 import { cabins } from "./data-cabins";
 import { guests } from "./data-guests";
@@ -46,18 +47,18 @@ async function createBookings() {
     .from("guests")
     .select("id")
     .order("id");
-  const allGuestIds = guestsIds.map((cabin) => cabin.id);
+  const allGuestIds = guestsIds?.map((cabin) => cabin.id);
   const { data: cabinsIds } = await supabase
     .from("cabins")
     .select("id")
     .order("id");
-  const allCabinIds = cabinsIds.map((cabin) => cabin.id);
+  const allCabinIds = cabinsIds?.map((cabin) => cabin.id);
 
-  const finalBookings = bookings.map((booking) => {
+  const finalBookings = bookings.map((booking: BookingInputs) => {
     // Here relying on the order of cabins, as they don't have and ID yet
     const cabin = cabins.at(booking.cabinId - 1);
     const numNights = subtractDates(booking.endDate, booking.startDate);
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
+    const cabinPrice = numNights * (cabin!.regularPrice - cabin!.discount);
     const extrasPrice = booking.hasBreakfast
       ? numNights * 15 * booking.numGuests
       : 0; // hardcoded breakfast price
@@ -88,8 +89,8 @@ async function createBookings() {
       cabinPrice,
       extrasPrice,
       totalPrice,
-      guestId: allGuestIds.at(booking.guestId - 1),
-      cabinId: allCabinIds.at(booking.cabinId - 1),
+      guestId: allGuestIds?.at(booking.guestId - 1),
+      cabinId: allCabinIds?.at(booking.cabinId - 1),
       status,
     };
   });
@@ -139,11 +140,19 @@ function Uploader() {
       }}>
       <h3>SAMPLE DATA</h3>
 
-      <Button onClick={uploadAll} disabled={isLoading}>
+      <Button
+        size="large"
+        variation="primary"
+        onClick={uploadAll}
+        disabled={isLoading}>
         Upload ALL
       </Button>
 
-      <Button onClick={uploadBookings} disabled={isLoading}>
+      <Button
+        size="large"
+        variation="primary"
+        onClick={uploadBookings}
+        disabled={isLoading}>
         Upload bookings ONLY
       </Button>
     </div>

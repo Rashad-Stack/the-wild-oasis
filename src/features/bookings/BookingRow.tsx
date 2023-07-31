@@ -72,12 +72,13 @@ function BookingRow({
         <Cabin key={index}>{cabin.name}</Cabin>
       ))}
 
-      {guests.map((guest) => (
-        <Stacked key={guest.email}>
-          <span>{guest.fullName}</span>
-          <span>{guest.email}</span>
-        </Stacked>
-      ))}
+      {guests.length &&
+        guests.map((guest) => (
+          <Stacked key={guest?.email}>
+            <span>{guest?.fullName}</span>
+            <span>{guest?.email}</span>
+          </Stacked>
+        ))}
 
       <Stacked>
         <span>
