@@ -158,8 +158,9 @@ interface ButtonProps {
   children: React.ReactNode;
   icon: React.ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 }
-function Button({ children, icon, onClick }: ButtonProps) {
+function Button({ children, icon, onClick, disabled }: ButtonProps) {
   const { close } = useContext(MenusContext);
 
   function handleClick() {
@@ -167,7 +168,7 @@ function Button({ children, icon, onClick }: ButtonProps) {
     close();
   }
   return (
-    <StyledButton onClick={handleClick}>
+    <StyledButton onClick={handleClick} disabled={disabled}>
       {icon} <span>{children}</span>
     </StyledButton>
   );

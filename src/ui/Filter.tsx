@@ -49,6 +49,7 @@ export default function Filter({ filterField, options }: FilterProps) {
   const currentFilter = searchParam.get(filterField) || options[0].value;
   function handleClick(value: string) {
     searchParam.set(filterField, value);
+    if (searchParam.get("page")) searchParam.set("page", "1");
     setSearchParam(searchParam);
   }
   return (
