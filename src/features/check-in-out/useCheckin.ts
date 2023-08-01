@@ -2,13 +2,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { updateBooking } from "../../services/apibookings";
+import { BookingInputs } from "../../types";
+
+interface MutationProps {
+  bookingId: number;
+  breakfast: Partial<BookingInputs>;
+}
 
 export default function useCheckin() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { mutate: checkin, isLoading: isCheckin } = useMutation({
-    mutationFn: (bookingId: number) =>
+    mutationFn: ({ bookingId, breakfast }: MutationProps) =>
       updateBooking(bookingId, {
+        ...breakfast,
         isPaid: true,
         status: "checked-in",
       }),
