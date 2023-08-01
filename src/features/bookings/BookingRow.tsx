@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Table from "../../ui/Table";
 import Tag from "../../ui/Tag";
 
-import { HiEye } from "react-icons/hi2";
+import { HiArrowDownOnSquare, HiEye } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { Booking } from "../../types";
 import Menus from "../../ui/Menus";
@@ -50,11 +50,9 @@ interface StatusToTagName {
 function BookingRow({
   booking: {
     id: bookingId,
-    created_at,
     startDate,
     endDate,
     numNights,
-    numGuests,
     totalPrice,
     status,
     guests,
@@ -108,6 +106,13 @@ function BookingRow({
             onClick={() => navigate(`/bookings/${bookingId}`)}>
             See details
           </Menus.Button>
+          {statusTag === "unconfirmed" && (
+            <Menus.Button
+              icon={<HiArrowDownOnSquare />}
+              onClick={() => navigate(`/checkin/${bookingId}`)}>
+              Check in
+            </Menus.Button>
+          )}
         </Menus.List>
       </Menus.Menu>
     </Table.Row>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import BookingDataBox from "../bookings/BookingDataBox";
 
@@ -8,6 +9,11 @@ import Heading from "../../ui/Heading";
 import Row from "../../ui/Row";
 
 import { useMoveBack } from "../../hooks/useMoveback";
+import Checkbox from "../../ui/Checkbox";
+import Spinner from "../../ui/Spinner";
+import { formatCurrency } from "../../utils/helpers";
+import useBooking from "../bookings/useBooking";
+import useCheckin from "./useCheckin";
 
 const Box = styled.div`
   /* Box */
@@ -18,9 +24,16 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
+  const [confirmPaid, setConfirmPaid] = useState(false);
+  const { isLoading, booking } = useBooking();
   const moveBack = useMoveBack();
+  const { checkin, isCheckin } = useCheckin();
 
-  const booking = {};
+  useEffect(() => {
+    setConfirmPaid(booking?.isPaid ?? false);
+  }, [booking]);
+
+  if (isLoading) return <Spinner />;
 
   const {
     id: bookingId,
@@ -31,7 +44,10 @@ function CheckinBooking() {
     numNights,
   } = booking;
 
-  function handleCheckin() {}
+  function handleCheckin() {
+    if (!confirmPaid) return;
+    checkin(bookingId);
+  }
 
   return (
     <>
@@ -42,9 +58,26 @@ function CheckinBooking() {
 
       <BookingDataBox booking={booking} />
 
+      <Box>
+        <Checkbox
+          checked={confirmPaid}
+          onChange={() => setConfirmPaid(!confirmPaid)}
+          disabled={confirmPaid || isCheckin}
+          id="confirmPaid">
+          I confirm that {guests.fullName} has paid the total amount of{" "}
+          {formatCurrency(totalPrice)}
+        </Checkbox>
+      </Box>
+
       <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
-        <Button variation="secondary" onClick={moveBack}>
+        <Button
+          size="medium"
+          variation="primary"
+          onClick={handleCheckin}
+          disabled={!confirmPaid || isCheckin}>
+          Check in booking #{bookingId}
+        </Button>
+        <Button size="medium" variation="secondary" onClick={moveBack}>
           Back
         </Button>
       </ButtonGroup>

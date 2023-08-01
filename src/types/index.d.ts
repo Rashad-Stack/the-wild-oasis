@@ -48,6 +48,24 @@ export interface Booking {
   cabins: Cabins[];
 }
 
+export interface BookingInputs extends Booking {
+  cabinPrice: number;
+  extrasPrice: number;
+  hasBreakfast: boolean;
+  observations: string;
+  isPaid: boolean;
+  guests: {
+    fullName: string;
+    email: string;
+    country: string;
+    countryFlag: string;
+    nationalID: string;
+  };
+  cabins: {
+    name: string;
+  };
+}
+
 export interface BookingInputs {
   created_at: string;
   startDate: string;

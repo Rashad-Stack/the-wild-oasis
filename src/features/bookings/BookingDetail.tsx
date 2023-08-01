@@ -8,6 +8,7 @@ import Row from "../../ui/Row";
 import Tag from "../../ui/Tag";
 import BookingDataBox from "./BookingDataBox";
 
+import { useNavigate } from "react-router-dom";
 import { useMoveBack } from "../../hooks/useMoveback";
 import Spinner from "../../ui/Spinner";
 import useBooking from "./useBooking";
@@ -24,10 +25,9 @@ function BookingDetail() {
   const { isLoading, booking } = useBooking();
 
   const moveBack = useMoveBack();
+  const navigate = useNavigate();
 
   if (isLoading) return <Spinner />;
-
-  console.log(booking);
 
   const { status, id: bookingId } = booking;
 
@@ -52,6 +52,14 @@ function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <ButtonGroup>
+        {status === "unconfirmed" && (
+          <Button
+            size="small"
+            variation="primary"
+            onClick={() => navigate(`/checkin/${bookingId}`)}>
+            Check in
+          </Button>
+        )}
         <Button size="medium" variation="secondary" onClick={moveBack}>
           Back
         </Button>

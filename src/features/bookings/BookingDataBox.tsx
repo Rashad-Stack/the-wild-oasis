@@ -10,6 +10,7 @@ import styled from "styled-components";
 import DataItem from "../../ui/Dataitem";
 import { Flag } from "../../ui/Flag";
 
+import { BookingInputs } from "../../types";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
 
 interface PriceProps {
@@ -105,32 +106,8 @@ const Footer = styled.footer`
   text-align: right;
 `;
 
-interface Booking {
-  created_at: string;
-  startDate: string;
-  endDate: string;
-  numNights: number;
-  numGuests: number;
-  cabinPrice: number;
-  extrasPrice: number;
-  totalPrice: number;
-  hasBreakfast: boolean;
-  observations: string;
-  isPaid: boolean;
-  guests: {
-    fullName: string;
-    email: string;
-    country: string;
-    countryFlag: string;
-    nationalID: string;
-  };
-  cabins: {
-    name: string;
-  };
-}
-
 interface BookingProps {
-  booking: Booking;
+  booking: BookingInputs;
 }
 
 // A purely presentational component
