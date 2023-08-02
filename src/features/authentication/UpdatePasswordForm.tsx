@@ -1,32 +1,31 @@
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import useUpdateUser from "./useUpdateUser";
 
-import { useUpdateUser } from "./useUpdateUser";
-
-function UpdatePasswordForm() {
+export default function UpdatePasswordForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
 
-  const { updateUser, isUpdating } = useUpdateUser();
+  const { isLoading, updateUser } = useUpdateUser();
 
-  function onSubmit({ password }) {
-    updateUser({ password }, { onSuccess: reset });
+  function onSubmit(values: FieldValues) {
+    const { password } = values;
+    updateUser({ password }, { onSuccess: () => reset() });
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form type="regular" onSubmit={handleSubmit(onSubmit)}>
       <FormRow
         label="Password (min 8 characters)"
-        error={errors?.password?.message}
-      >
+        err={errors?.password?.message as string}>
         <Input
           type="password"
           id="password"
           autoComplete="current-password"
-          disabled={isUpdating}
+          disabled={isLoading}
           {...register("password", {
             required: "This field is required",
             minLength: {
@@ -39,13 +38,12 @@ function UpdatePasswordForm() {
 
       <FormRow
         label="Confirm password"
-        error={errors?.passwordConfirm?.message}
-      >
+        err={errors?.passwordConfirm?.message as string}>
         <Input
           type="password"
           autoComplete="new-password"
           id="passwordConfirm"
-          disabled={isUpdating}
+          disabled={isLoading}
           {...register("passwordConfirm", {
             required: "This field is required",
             validate: (value) =>
@@ -54,13 +52,23 @@ function UpdatePasswordForm() {
         />
       </FormRow>
       <FormRow>
-        <Button onClick={reset} type="reset" variation="secondary">
-          Cancel
-        </Button>
-        <Button disabled={isUpdating}>Update password</Button>
+        <>
+          <Button
+            size="small"
+            onClick={reset}
+            type="reset"
+            variation="secondary">
+            Cancel
+          </Button>
+          <Button
+            size="small"
+            type="submit"
+            variation="primary"
+            disabled={isLoading}>
+            Update password
+          </Button>
+        </>
       </FormRow>
     </Form>
   );
 }
-
-export default UpdatePasswordForm;
