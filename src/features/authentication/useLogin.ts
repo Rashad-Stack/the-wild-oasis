@@ -10,7 +10,7 @@ export default function useLogin() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       loginApi(email, password),
     onSuccess: (user) => {
-      queryClient.setQueriesData(["user"], user);
+      queryClient.setQueryData(["user"], user);
       navigate("/dashboard");
     },
     onError: (err: Error) => {
