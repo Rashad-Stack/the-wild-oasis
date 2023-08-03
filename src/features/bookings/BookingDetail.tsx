@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../ui/Button";
@@ -8,9 +9,9 @@ import Row from "../../ui/Row";
 import Tag from "../../ui/Tag";
 import BookingDataBox from "./BookingDataBox";
 
-import { useNavigate } from "react-router-dom";
 import { useMoveBack } from "../../hooks/useMoveback";
 import ConfirmDelete from "../../ui/Confirmdelete";
+import Empty from "../../ui/Empty";
 import Modal from "../../ui/Modal";
 import Spinner from "../../ui/Spinner";
 import useCheckout from "../check-in-out/useCheckout";
@@ -34,6 +35,7 @@ function BookingDetail() {
   const navigate = useNavigate();
 
   if (isLoading) return <Spinner />;
+  if (!booking) return <Empty resourceName="Booking" />;
 
   const { status, id: bookingId } = booking;
 

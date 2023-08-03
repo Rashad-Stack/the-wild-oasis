@@ -44,6 +44,7 @@ const StyledList = styled.ul<StyledListProps>`
 
   right: ${(props) => props.position.x}px;
   top: ${(props) => props.position.y}px;
+  z-index: 1;
 `;
 
 const StyledButton = styled.button`
@@ -117,6 +118,7 @@ function Toggle({ id }: ToggleProps) {
   const { openId, close, open, setPositions } = useContext(MenusContext);
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
     const target = e.target as Element;
     const buttonElement = target.closest("button");
     if (!buttonElement) return null;
@@ -144,7 +146,7 @@ interface ListProps {
 
 function List({ id, children }: ListProps) {
   const { openId, positions, close } = useContext(MenusContext);
-  const listRef = useOutsideClick<HTMLUListElement>(close);
+  const listRef = useOutsideClick<HTMLUListElement>(close, false);
   if (openId !== id) return null;
 
   return (

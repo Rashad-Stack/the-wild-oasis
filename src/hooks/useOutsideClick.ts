@@ -12,7 +12,6 @@ export function useOutsideClick<T extends HTMLElement>(
         windowRef.current &&
         !windowRef.current.contains(event.target as Node)
       ) {
-        console.log("clicked outside");
         handler();
       }
     }
