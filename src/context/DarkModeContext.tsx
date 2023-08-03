@@ -24,7 +24,7 @@ export default function DarkModeProvider({ children }: DarkModeProviderProps) {
   });
 
   function toggleDarkMode() {
-    setIsDarkMode((prev) => !prev);
+    setIsDarkMode((prev: boolean) => !prev);
   }
 
   return (

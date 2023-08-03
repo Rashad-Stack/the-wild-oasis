@@ -40,7 +40,7 @@ const FilterButton = styled.button<FilterButtonProps>`
 `;
 
 interface FilterProps {
-  filterField: "discount" | "status";
+  filterField: "discount" | "status" | "last";
   options: { value: string; label: string }[];
 }
 

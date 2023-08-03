@@ -1,4 +1,15 @@
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import styled from "styled-components";
+import useDarkMode from "../../hooks/useDarkMode";
+import { BookingInputs } from "../../types";
+import Heading from "../../ui/Heading";
 
 const ChartBox = styled.div`
   /* Box */
@@ -18,7 +29,13 @@ const ChartBox = styled.div`
   }
 `;
 
-const startDataLight = [
+interface StartDataTypes {
+  duration: string;
+  value: number;
+  color: string;
+}
+
+const startDataLight: StartDataTypes[] = [
   {
     duration: "1 night",
     value: 0,
@@ -61,7 +78,7 @@ const startDataLight = [
   },
 ];
 
-const startDataDark = [
+const startDataDark: StartDataTypes[] = [
   {
     duration: "1 night",
     value: 0,
@@ -104,10 +121,13 @@ const startDataDark = [
   },
 ];
 
-function prepareData(startData, stays) {
+function prepareData(
+  startData: StartDataTypes[],
+  stays: Partial<BookingInputs[]>
+) {
   // A bit ugly code, but sometimes this is what it takes when working with real data 😅
 
-  function incArrayValue(arr, field) {
+  function incArrayValue(arr: StartDataTypes[], field: string) {
     return arr.map((obj) =>
       obj.duration === field ? { ...obj, value: obj.value + 1 } : obj
     );
@@ -115,7 +135,7 @@ function prepareData(startData, stays) {
 
   const data = stays
     .reduce((arr, cur) => {
-      const num = cur.numNights;
+      const num = cur!.numNights;
       if (num === 1) return incArrayValue(arr, "1 night");
       if (num === 2) return incArrayValue(arr, "2 nights");
       if (num === 3) return incArrayValue(arr, "3 nights");
@@ -129,4 +149,51 @@ function prepareData(startData, stays) {
     .filter((obj) => obj.value > 0);
 
   return data;
+}
+
+interface DurationChartProps {
+  confirmStays: Partial<BookingInputs[]>;
+}
+
+export default function DurationChart({ confirmStays }: DurationChartProps) {
+  const { isDarkMode } = useDarkMode();
+
+  const startData = isDarkMode ? startDataDark : startDataLight;
+  const data = prepareData(startData, confirmStays);
+
+  return (
+    <ChartBox>
+      <Heading as="h2">Stay duration summery </Heading>
+      <ResponsiveContainer width="100%" height={240}>
+        <PieChart>
+          <Pie
+            data={data}
+            nameKey="duration"
+            dataKey="value"
+            innerRadius={85}
+            outerRadius={110}
+            cx="50%"
+            cy="50%"
+            paddingAngle={3}>
+            {startDataLight.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                stroke={entry.color}
+              />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            width={150}
+            layout="vertical"
+            iconSize={15}
+            iconType="circle"
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </ChartBox>
+  );
 }
