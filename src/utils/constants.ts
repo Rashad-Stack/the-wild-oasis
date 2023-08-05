@@ -1,1 +1,1 @@
-export const PAGE_SIZE: number = 3;
+export const PAGE_SIZE: number = 5;
